@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>🔥 Insta Ultra Pro Hub</title>
+
+<style>
+body {
+  font-family: Arial;
+  background: linear-gradient(135deg,#000428,#004e92);
+  color: white;
+  text-align: center;
+}
+
+.box {
+  background: rgba(255,255,255,0.1);
+  margin: 15px;
+  padding: 20px;
+  border-radius: 15px;
+}
+
+input, button {
+  padding: 10px;
+  margin: 5px;
+  border-radius: 10px;
+  border: none;
+}
+
+button {
+  background: #00ffe1;
+  cursor: pointer;
+}
+
+#panel { display:none; }
+</style>
+</head>
+
+<body>
+
+<h1>🔥 Insta Ultra Pro Hub</h1>
+
+<!-- LOGIN -->
+<div class="box" id="loginBox">
+<h2>🔐 Login</h2>
+<input id="user" placeholder="Username">
+<input id="pass" type="password" placeholder="Password">
+<button onclick="login()">Login</button>
+<p id="loginMsg"></p>
+</div>
+
+<!-- MAIN PANEL -->
+<div id="panel">
+
+<div class="box">
+<h2>👤 Username Analyzer</h2>
+<input id="u">
+<button onclick="analyze()">Check</button>
+<p id="r1"></p>
+</div>
+
+<div class="box">
+<h2>🤖 Fake Checker</h2>
+<input id="f">
+<button onclick="fake()">Check</button>
+<p id="r2"></p>
+</div>
+
+<div class="box">
+<h2>✨ Bio Generator</h2>
+<input id="b">
+<button onclick="bio()">Generate</button>
+<p id="r3"></p>
+</div>
+
+<div class="box">
+<h2>🧠 AI Reply</h2>
+<input id="q">
+<button onclick="ai()">Ask</button>
+<p id="r4"></p>
+</div>
+
+<div class="box">
+<h2>📊 Admin Panel</h2>
+<button onclick="loadData()">Load Data</button>
+<div id="data"></div>
+</div>
+
+</div>
+
+<script>
+
+// LOCAL STORAGE SYSTEM
+function saveLog(type, value){
+  let logs = JSON.parse(localStorage.getItem("logs")) || [];
+  logs.push({type, value});
+  localStorage.setItem("logs", JSON.stringify(logs));
+}
+
+// LOGIN
+function login(){
+  let u = document.getElementById("user").value;
+  let p = document.getElementById("pass").value;
+
+  if(u==="admin" && p==="1234"){
+    document.getElementById("loginBox").style.display="none";
+    document.getElementById("panel").style.display="block";
+  } else {
+    document.getElementById("loginMsg").innerText="Wrong login ❌";
+  }
+}
+
+// ANALYZER
+function analyze(){
+  let val = document.getElementById("u").value;
+  let score = Math.floor(Math.random()*100);
+
+  document.getElementById("r1").innerText = score;
+  saveLog("analyze", val);
+}
+
+// FAKE
+function fake(){
+  let val = document.getElementById("f").value;
+  let res = Math.random()>0.5?"REAL":"FAKE";
+
+  document.getElementById("r2").innerText = res;
+  saveLog("fake", val);
+}
+
+// BIO
+function bio(){
+  let val = document.getElementById("b").value;
+  let text = `🔥 ${val} | Ultra King`;
+
+  document.getElementById("r3").innerText = text;
+  saveLog("bio", val);
+}
+
+// AI
+function ai(){
+  let val = document.getElementById("q").value;
+
+  let replies = [
+    "Yes 🔥",
+    "No ❌",
+    "Focus karo 😎",
+    "Danger level high ⚠️"
+  ];
+
+  let ans = replies[Math.floor(Math.random()*replies.length)];
+
+  document.getElementById("r4").innerText = ans;
+  saveLog("ai", val);
+}
+
+// ADMIN PANEL
+function loadData(){
+  let div = document.getElementById("data");
+  let logs = JSON.parse(localStorage.getItem("logs")) || [];
+
+  let html = "";
+
+  logs.forEach(d=>{
+    html += `<p>${d.type} → ${d.value}</p>`;
+  });
+
+  div.innerHTML = html || "No Data";
+}
+
+</script>
+
+</body>
+</html>l
