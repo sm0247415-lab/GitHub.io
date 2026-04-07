@@ -2,172 +2,165 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>🔥 Insta Ultra Pro Hub</title>
+<title>Shadow AI 🖤</title>
 
 <style>
 body {
-  font-family: Arial;
-  background: linear-gradient(135deg,#000428,#004e92);
-  color: white;
+  margin: 0;
+  font-family: monospace;
+  background: black;
+  color: #00ff9d;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+header {
+  padding: 15px;
   text-align: center;
+  font-size: 22px;
+  border-bottom: 1px solid #00ff9d;
 }
 
-.box {
-  background: rgba(255,255,255,0.1);
-  margin: 15px;
-  padding: 20px;
-  border-radius: 15px;
-}
-
-input, button {
+#chat {
+  flex: 1;
+  overflow-y: auto;
   padding: 10px;
-  margin: 5px;
-  border-radius: 10px;
+}
+
+.msg {
+  margin: 10px;
+  padding: 10px;
+  border-radius: 5px;
+  max-width: 80%;
+}
+
+.user {
+  background: #00ff9d;
+  color: black;
+  margin-left: auto;
+}
+
+.bot {
+  background: #111;
+  position: relative;
+}
+
+#inputBox {
+  display: flex;
+  border-top: 1px solid #00ff9d;
+}
+
+input {
+  flex: 1;
+  padding: 15px;
   border: none;
+  outline: none;
+  background: black;
+  color: #00ff9d;
 }
 
 button {
-  background: #00ffe1;
+  padding: 15px;
+  background: #00ff9d;
+  border: none;
   cursor: pointer;
 }
 
-#panel { display:none; }
+/* Cursor blink */
+@keyframes blink {
+  0% {opacity: 1;}
+  50% {opacity: 0;}
+  100% {opacity: 1;}
+}
+
+.bot::after {
+  content: "|";
+  animation: blink 1s infinite;
+}
 </style>
 </head>
 
 <body>
 
-<h1>🔥 Insta Ultra Pro Hub</h1>
+<header>🖤 SHADOW AI TERMINAL</header>
 
-<!-- LOGIN -->
-<div class="box" id="loginBox">
-<h2>🔐 Login</h2>
-<input id="user" placeholder="Username">
-<input id="pass" type="password" placeholder="Password">
-<button onclick="login()">Login</button>
-<p id="loginMsg"></p>
+<div id="chat"></div>
+
+<div id="inputBox">
+  <input id="msg" placeholder="Type command...">
+  <button onclick="send()">ENTER</button>
 </div>
 
-<!-- MAIN PANEL -->
-<div id="panel">
-
-<div class="box">
-<h2>👤 Username Analyzer</h2>
-<input id="u">
-<button onclick="analyze()">Check</button>
-<p id="r1"></p>
-</div>
-
-<div class="box">
-<h2>🤖 Fake Checker</h2>
-<input id="f">
-<button onclick="fake()">Check</button>
-<p id="r2"></p>
-</div>
-
-<div class="box">
-<h2>✨ Bio Generator</h2>
-<input id="b">
-<button onclick="bio()">Generate</button>
-<p id="r3"></p>
-</div>
-
-<div class="box">
-<h2>🧠 AI Reply</h2>
-<input id="q">
-<button onclick="ai()">Ask</button>
-<p id="r4"></p>
-</div>
-
-<div class="box">
-<h2>📊 Admin Panel</h2>
-<button onclick="loadData()">Load Data</button>
-<div id="data"></div>
-</div>
-
-</div>
+<!-- 🔊 Typing Sound -->
+<audio id="typeSound" src="https://www.soundjay.com/mechanical/keyboard-1.mp3"></audio>
 
 <script>
+7
+const API_KEY = "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";
 
-// LOCAL STORAGE SYSTEM
-function saveLog(type, value){
-  let logs = JSON.parse(localStorage.getItem("logs")) || [];
-  logs.push({type, value});
-  localStorage.setItem("logs", JSON.stringify(logs));
+function addMsg(text, cls){
+  let div = document.createElement("div");
+  div.className = "msg " + cls;
+  document.getElementById("chat").appendChild(div);
+  document.getElementById("chat").scrollTop = 9999;
+  return div;
 }
 
-// LOGIN
-function login(){
-  let u = document.getElementById("user").value;
-  let p = document.getElementById("pass").value;
+// 🔥 Typing + Sound Effect
+function typeEffect(element, text, speed=20){
+  let i = 0;
+  element.innerText = "";
+  let sound = document.getElementById("typeSound");
 
-  if(u==="admin" && p==="1234"){
-    document.getElementById("loginBox").style.display="none";
-    document.getElementById("panel").style.display="block";
-  } else {
-    document.getElementById("loginMsg").innerText="Wrong login ❌";
+  function typing(){
+    if(i < text.length){
+      element.innerText += text.charAt(i);
+      
+      // 🔊 play sound
+      sound.currentTime = 0;
+      sound.play();
+
+      i++;
+      setTimeout(typing, speed);
+    }
   }
+
+  typing();
 }
 
-// ANALYZER
-function analyze(){
-  let val = document.getElementById("u").value;
-  let score = Math.floor(Math.random()*100);
+async function send(){
+  let input = document.getElementById("msg");
+  let text = input.value.trim();
+  if(!text) return;
 
-  document.getElementById("r1").innerText = score;
-  saveLog("analyze", val);
-}
+  addMsg(text, "user");
+  input.value = "";
 
-// FAKE
-function fake(){
-  let val = document.getElementById("f").value;
-  let res = Math.random()>0.5?"REAL":"FAKE";
+  let botDiv = addMsg("", "bot");
 
-  document.getElementById("r2").innerText = res;
-  saveLog("fake", val);
-}
-
-// BIO
-function bio(){
-  let val = document.getElementById("b").value;
-  let text = `🔥 ${val} | Ultra King`;
-
-  document.getElementById("r3").innerText = text;
-  saveLog("bio", val);
-}
-
-// AI
-function ai(){
-  let val = document.getElementById("q").value;
-
-  let replies = [
-    "Yes 🔥",
-    "No ❌",
-    "Focus karo 😎",
-    "Danger level high ⚠️"
-  ];
-
-  let ans = replies[Math.floor(Math.random()*replies.length)];
-
-  document.getElementById("r4").innerText = ans;
-  saveLog("ai", val);
-}
-
-// ADMIN PANEL
-function loadData(){
-  let div = document.getElementById("data");
-  let logs = JSON.parse(localStorage.getItem("logs")) || [];
-
-  let html = "";
-
-  logs.forEach(d=>{
-    html += `<p>${d.type} → ${d.value}</p>`;
+  let res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + API_KEY
+    },
+    body: JSON.stringify({
+      model: "llama3-70b-8192",
+      messages: [
+        { role: "system", content: "You are Shadow AI, hacker style, dark, smart and slightly savage assistant." },
+        { role: "user", content: text }
+      ]
+    })
   });
 
-  div.innerHTML = html || "No Data";
+  let data = await res.json();
+  let reply = data.choices[0].message.content;
+
+  typeEffect(botDiv, reply, 15);
 }
 
 </script>
 
 </body>
-</html>l
+</html>
